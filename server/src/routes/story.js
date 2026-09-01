@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
     }
 
     const langInstruction = LANGUAGE_PROMPTS[language] || ''
-    const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     const result = await model.generateContent(
       `Create a magical story based on this prompt: "${prompt}". ${SENSORY_SYSTEM_PROMPT}\n\n${langInstruction}`
     )
@@ -63,8 +63,8 @@ router.post('/', async (req, res) => {
 
     res.json({ story: cleanStory })
   } catch (err) {
-    console.error('Story generation error:', err)
-    res.status(500).json({ error: 'Failed to generate story' })
+    console.error('Story generation error:', err.message || err)
+    res.status(500).json({ error: 'Failed to generate story: ' + (err.message || 'unknown error') })
   }
 })
 
