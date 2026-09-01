@@ -16,9 +16,9 @@ export function AppProvider({ children }) {
   const generateStory = useCallback(async (prompt) => {
     setIsGenerating(true)
     try {
+      const API_BASE = import.meta.env.VITE_API_URL || ''
       const langCode = language
-      const langInstruction = LANGUAGE_INSTRUCTIONS[langCode] || ''
-      const res = await fetch('/api/story', {
+      const res = await fetch(`${API_BASE}/api/story`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt, language: langCode }),
@@ -36,6 +36,8 @@ export function AppProvider({ children }) {
         }
         setSensorTags(tags)
         return { story: data.story, tags }
+      } else if (data.error) {
+        console.error('Backend error:', data.error)
       }
     } catch (err) {
       console.error('Story generation failed:', err)
